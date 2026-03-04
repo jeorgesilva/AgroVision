@@ -1,12 +1,15 @@
-# 🌿 AgroVision AI: Multi-Agent Crop Disease Detection
+# 🌱 AgroVision — Precision Weed Detection & VRA Mapping
 
-An enterprise-grade AgTech proof-of-concept that bridges the gap between **Computer Vision** and **Multi-Agent LLM Orchestration** to provide real-time, expert-level agronomic diagnostics.
+AgroVision is an applied AgTech project combining **Computer Vision** and **Geospatial Analysis** to enable **precision herbicide application**.
 
-## 🎯 Project Overview
+## 🎯 Features
+- Weed detection using **YOLOv8**
+- Geospatial processing with **GeoPandas**
+- Automatic generation of **Variable-Rate Application (VRA)** maps
+- Export to **GeoJSON** for QGIS or agricultural controllers
 
-In precision agriculture, simply detecting a disease is not enough; farmers need immediate, actionable, and accurate treatment plans. **AgroVision AI** solves this by using a two-tier AI architecture:
-1. **The Eyes (Computer Vision):** A custom-trained YOLOv8 model detects crop diseases from leaf images.
-2. **The Brain (CrewAI Multi-Agent System):** Instead of relying on a single LLM prompt (which is prone to hallucinations), the system triggers a specialized crew of AI agents (a Chief Agronomist and a Treatment Specialist) to debate and generate a factual, step-by-step action plan.
+## 🧠 Tech Stack
+Python • YOLOv8 • OpenCV • GeoPandas • Shapely • Rasterio
 
 ## 🏗️ Architecture & Workflow
 
@@ -34,23 +37,39 @@ In precision agriculture, simply detecting a disease is not enough; farmers need
 ## 📁 Project Structure
 
 ```text
-agrovision-ai/
-├── app/
-│   ├── __init__.py
-│   └── streamlit_app.py        # Main Streamlit UI (Frontend)
-├── core/
-│   ├── __init__.py
-│   ├── vision.py               # YOLOv8 inference and image processing logic
-│   └── crew_logic.py           # CrewAI multi-agent orchestration and LLM config
-├── data/
-│   ├── sample_images/          # Test images (healthy and diseased leaves)
-│   └── models/                 # Trained YOLO weights (e.g., yolov8n.pt)
-├── tests/
-│   └── __init__.py
-├── requirements.txt            # Project dependencies
-├── .env.example                # Template for environment variables
-├── .gitignore                  # Git ignore file (excludes weights, secrets, etc.)
-└── README.md                   # Project documentation
+AgroVision/
+├── README.md
+├── requirements.txt
+├── pyproject.toml
+├── src/
+│   └── agrovision/
+│       ├── __init__.py
+│       ├── config.py
+│       ├── data/
+│       │   ├── __init__.py
+│       │   ├── loaders.py
+│       │   ├── geo_utils.py
+│       │   └── transforms.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── yolo.py
+│       ├── pipelines/
+│       │   ├── __init__.py
+│       │   ├── detect_weeds.py
+│       │   └── vra_mapping.py
+│       └── utils/
+│           ├── __init__.py
+│           └── file_utils.py
+├── scripts/
+│   ├── run_detection.py
+│   └── run_vra_mapping.py
+├── notebooks/
+│   ├── 01_exploration.ipynb
+│   ├── 02_train_yolo.ipynb
+│   └── 03_vra_demo.ipynb
+└── configs/
+    ├── yolo.yaml
+    └── vra.yaml
 
 ```
 
@@ -87,23 +106,29 @@ pip install -r requirements.txt
 
 *(Requires Python 3.9+)*
 
-### 3. Setup Environment Variables
-
-Create a `.streamlit/secrets.toml` file in the root directory and add your HuggingFace token:
+### 3. Run weed detection
 
 ```toml
-HUGGINGFACEHUB_API_TOKEN = "your_hf_token_here"
-
+python scripts/run_detection.py \
+--model weights/best.pt \
+--input_dir data/images \
+--output_dir outputs/detections
 ```
 
 *Note: Ensure `.streamlit/` is added to your `.gitignore` to prevent leaking API keys.*
 
-### 4. Run the Application
+### 4. Generate VRA map
 
 ```bash
-streamlit run app/streamlit_app.py
-
+python scripts/run_vra_mapping.py \
+--detections outputs/detections.json \
+--transform data/transform.json \
+--output outputs/vra.geojson
 ```
+
+## 📦 Output
+- Annotated images with weed bounding boxes
+- `vra.geojson` containing weed density per grid cell
 
 ## 🗺️ Roadmap & Future Enhancements
 
