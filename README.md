@@ -11,28 +11,6 @@ AgroVision is an applied AgTech project combining **Computer Vision** and **Geos
 ## 🧠 Tech Stack
 Python • YOLOv8 • OpenCV • GeoPandas • Shapely • Rasterio
 
-## 🏗️ Architecture & Workflow
-
-```text
-┌─────────────────┐      ┌────────────────────┐      ┌─────────────────────┐
-│ 1. Image Upload │ ───> │ 2. YOLOv8 Model    │ ───> │ Detected: e.g.,     │
-│  (Streamlit UI) │      │ (Object Detection) │      │ "Soybean Rust"      │
-└─────────────────┘      └────────────────────┘      └─────────┬───────────┘
-                                                               │
-┌──────────────────────────────────────────────────────────────┴───────────┐
-│ 3. CrewAI Orchestration (Multi-Agent System)                             │
-│                                                                          │
-│  🧑‍🔬 Agent 1: Chief Agronomist        👨‍🌾 Agent 2: Treatment Specialist  │
-│  Analyzes biological impact and   ──>  Formulates chemical/organic       │
-│  contagion risks.                      treatment & preventive measures.  │
-└──────────────────────────────────────────────┬───────────────────────────┘
-                                               │
-┌──────────────────────────────────────────────▼───────────────────────────┐
-│ 4. Final Output                                                          │
-│ Bounding box visuals + Comprehensive, step-by-step agronomic report      │
-└──────────────────────────────────────────────────────────────────────────┘
-
-```
 
 ## 📁 Project Structure
 
@@ -72,21 +50,6 @@ AgroVision/
     └── vra.yaml
 
 ```
-
-## 🛠️ Tech Stack
-
-* **Frontend:** Streamlit (Interactive, state-managed UI)
-* **Computer Vision:** Ultralytics YOLOv8 (Real-time object detection)
-* **Agent Orchestration:** CrewAI & LangChain
-* **LLM Provider:** HuggingFace Inference API (`meta-llama/Llama-3.1-8B-Instruct`)
-* **Image Processing:** OpenCV & Pillow
-
-## 💡 Why This Architecture? (The Engineering Choice)
-
-* **Hallucination Mitigation:** By anchoring the LLM's context strictly to the YOLOv8 output, and dividing tasks among specialized agents via CrewAI, the system prevents generic or hallucinated agricultural advice.
-* **Separation of Concerns:** The vision model handles pixels; the LLM handles text logic. This allows independent scaling and fine-tuning of each component.
-* **Cost-Effective:** Utilizes the HuggingFace Router for inference, keeping API costs to a minimum while maintaining high reasoning capabilities.
-
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
@@ -108,7 +71,7 @@ pip install -r requirements.txt
 
 ### 3. Run weed detection
 
-```toml
+```bash
 python scripts/run_detection.py \
 --model weights/best.pt \
 --input_dir data/images \
