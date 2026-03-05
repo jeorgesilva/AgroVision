@@ -1,0 +1,6 @@
+# configs/vra.yaml
+# VRA mapping configuration
+
+grid_size: 10 # meters
+min_weed_density: 0.1
+output_crs: "EPSG:4326"

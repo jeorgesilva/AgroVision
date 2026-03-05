@@ -1,0 +1,13 @@
+# configs/yolo.yaml
+# YOLOv8 configuration file
+
+# model
+model:
+  name: yolov8s.pt
+
+# data
+data:
+  train: ../data/images/train
+  val: ../data/images/val
+  names:
+    0: weed

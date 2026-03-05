@@ -1,0 +1,18 @@
+# scripts/run_detection.py
+import argparse
+
+from agrovision.pipelines.detect_weeds import run_detection_pipeline
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run weed detection pipeline.")
+    parser.add_argument("--model", type=str, required=True, help="Path to the YOLO model.")
+    parser.add_argument("--input_dir", type=str, required=True, help="Path to the input image directory.")
+    parser.add_argument("--output_dir", type=str, required=True, help="Path to the output directory.")
+    args = parser.parse_args()
+
+    run_detection_pipeline(args.model, args.input_dir, args.output_dir)
+
+
+if __name__ == "__main__":
+    main()
