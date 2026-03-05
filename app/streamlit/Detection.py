@@ -2,7 +2,7 @@
 import streamlit as st
 from PIL import Image
 import os
-from agrovision.core.detection import WeedDetector
+from agrovision.models.yolo import WeedDetector
 from agrovision.utils.file_utils import create_dir_if_not_exists
 
 st.set_page_config(page_title="Weed Detection", page_icon="🌿")

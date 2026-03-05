@@ -5,19 +5,18 @@ import os
 from tqdm import tqdm
 
 from agrovision.data.loaders import load_images
-from agrovision.core.detection import WeedDetector
+from agrovision.core.detection import run_detection
 
 
 def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str):
     """Runs the weed detection pipeline."""
-    detector = WeedDetector(model_path)
     image_paths = load_images(input_dir)
 
     os.makedirs(output_dir, exist_ok=True)
 
     all_detections = {}
     for image_path in tqdm(image_paths, desc="Detecting weeds"):
-        detections = detector.detect(image_path)
+        detections = run_detection(model_path, image_path)
         image_name = os.path.basename(image_path)
         all_detections[image_name] = detections
 
