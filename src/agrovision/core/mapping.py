@@ -1,37 +1,66 @@
 # src/agrovision/core/mapping.py
+
 import json
 import geopandas as gpd
 from shapely.geometry import box
+from pathlib import Path
 
-from agrovision.core.geoprocess import create_grid, calculate_weed_density
-from agrovision.data.transforms import apply_transform, load_transform
+from agrovision.core.geoprocess import (
+    create_grid,
+    calculate_weed_density,
+    load_transform,
+    apply_transform
+)
 
 
-def create_vra_map(detections_path: str, transform_path: str, output_path: str, grid_size: int):
-    """Creates a VRA map from detections."""
-    with open(detections_path) as f:
+def create_vra_map(
+    detections_path: str,
+    transform_path: str,
+    output_path: str,
+    grid_size: int,
+    crs: str = "EPSG:4326"
+):
+    """Creates a VRA map from YOLO detections and saves it as GeoJSON."""
+
+    detections_path = Path(detections_path)
+    if not detections_path.exists():
+        raise FileNotFoundError(f"Detections file not found: {detections_path}")
+
+    with open(detections_path, "r", encoding="utf-8") as f:
         all_detections = json.load(f)
 
+    # Expecting a list of detection entries
+    # [
+    #   {"image_path": "...", "detections": [...], "image_shape": [...]},
+    #   ...
+    # ]
     transform = load_transform(transform_path)
 
-    weed_boxes = []
-    for image_name, detections in all_detections.items():
-        transformed_detections = apply_transform(detections, transform)
-        for detection in transformed_detections:
-            x1, y1, x2, y2 = detection["box"]
-            weed_boxes.append(box(x1, y1, x2, y2))
+    geometries = []
+    attributes = []
 
-    weeds_gdf = gpd.GeoDataFrame(geometry=weed_boxes, crs="EPSG:4326")  # Assuming WGS84
+    for entry in all_detections:
+        image_path = entry["image_path"]
+        detections = entry["detections"]
 
-    # Create a grid over the area of the weeds
+        transformed = apply_transform(detections, transform)
+
+        for det in transformed:
+            x1, y1, x2, y2 = det["bbox"]
+
+            geometries.append(box(x1, y1, x2, y2))
+            attributes.append({
+                "image": image_path,
+                "class": det["class_name"],
+                "confidence": det["confidence"]
+            })
+
+    weeds_gdf = gpd.GeoDataFrame(attributes, geometry=geometries, crs=crs)
+
     grid = create_grid(weeds_gdf, grid_size)
-
-    # Calculate weed density
     grid_with_density = calculate_weed_density(grid, weeds_gdf)
 
-    # Filter for grid cells with weeds
     vra_map = grid_with_density[grid_with_density["weed_density"] > 0]
 
-    # Save to GeoJSON
     vra_map.to_file(output_path, driver="GeoJSON")
     print(f"VRA map saved to {output_path}")

@@ -1,11 +1,14 @@
 # src/agrovision/core/detection.py
-from agrovision.models.yolo import WeedDetector
+from typing import List
+from pathlib import Path
+from agrovision.models.yolo import WeedDetector as YoloWeedDetector
+from agrovision.data.loaders import list_images
 
-
-def run_detection(model_path: str, image_path: str) -> list:
-    """
-    Runs weed detection on a single image.
-    """
-    detector = WeedDetector(model_path)
-    detections = detector.detect(image_path)
-    return detections
+def run_batch_detection(model_path: str, input_dir: str):
+    detector = YoloWeedDetector(model_path)
+    images = list_images(input_dir)
+    results = []
+    for img in images:
+        pred = detector.detect(str(img))
+        results.append((img, pred))
+    return results

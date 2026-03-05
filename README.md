@@ -22,7 +22,7 @@ AgroVision/
 ├── data/
 │   ├── images/
 │   ├── transforms/
-│   └── raw/
+│   └── raw/                # opcional
 ├── weights/
 │   └── best.pt
 ├── outputs/
@@ -35,15 +35,18 @@ AgroVision/
 │   └── agrovision/
 │       ├── __init__.py
 │       ├── config.py
-│       ├── core/
+│       ├── core/           # lógica central do projeto
 │       │   ├── detection.py
 │       │   ├── geoprocess.py
 │       │   └── mapping.py
-│       ├── data/
+│       ├── data/           # loaders e transforms
 │       │   ├── __init__.py
 │       │   ├── loaders.py
 │       │   ├── geo_utils.py
 │       │   └── transforms.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── yolo.py
 │       ├── pipelines/
 │       │   ├── __init__.py
 │       │   ├── detect_weeds.py
@@ -52,10 +55,10 @@ AgroVision/
 │       │   ├── __init__.py
 │       │   └── file_utils.py
 │       └── interfaces/
-│           ├── cli.py
+│           ├── cli.py      # comandos CLI
 │           └── streamlit_app.py
 ├── scripts/
-│   ├── run_detection.py
+│   ├── run_detection.py    # wrappers simples chamando interfaces.cli
 │   └── run_vra_mapping.py
 └── app/
     └── streamlit/

@@ -1,43 +1,52 @@
 # app/streamlit/Detection.py
+
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageDraw
 import os
-from agrovision.models.yolo import WeedDetector
-from agrovision.utils.file_utils import create_dir_if_not_exists
+
+from agrovision.models.yolo import WeedDetector as YoloWeedDetector
 
 st.set_page_config(page_title="Weed Detection", page_icon="🌿")
 
 st.title("🌿 Weed Detection")
+st.write("Upload an image and detect weeds using the YOLOv8 model.")
 
-st.write("Upload an image and the YOLOv8 model will detect weeds.")
-
-# Create directories if they don't exist
-create_dir_if_not_exists("uploads")
-create_dir_if_not_exists("weights")
+# Ensure upload directory exists
+os.makedirs("uploads", exist_ok=True)
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Save the uploaded file
+    # Save uploaded file
     image_path = os.path.join("uploads", uploaded_file.name)
     with open(image_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image.", use_column_width=True)
-    st.write("")
-    st.write("Detecting weeds...")
+    # Display uploaded image
+    image = Image.open(image_path)
+    st.image(image, caption="Uploaded Image", use_column_width=True)
 
-    # Perform detection
-    model_path = "weights/best.pt"  # Make sure this path is correct
+    st.write("Running detection...")
+
+    model_path = "weights/best.pt"
+
     if os.path.exists(model_path):
-        detector = WeedDetector(model_path)
-        detections = detector.detect(image_path)
+        detector = YoloWeedDetector(model_path)
+        result = detector.detect(image_path)
 
-        # For demonstration, we'll just print the detections
-        st.write(detections)
+        detections = result["detections"]
 
-        # Here you would typically draw the bounding boxes on the image
-        # and display it. That requires a bit more code with OpenCV or PIL.
+        # Draw bounding boxes
+        draw = ImageDraw.Draw(image)
+        for det in detections:
+            x1, y1, x2, y2 = det["bbox"]
+            draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
+            draw.text((x1, y1), det["class_name"], fill="red")
+
+        st.image(image, caption="Detections", use_column_width=True)
+
+        st.write("Raw detections:")
+        st.json(detections)
+
     else:
-        st.error(f"Model weights not found at {model_path}. Please make sure the weights file exists.")
+        st.error(f"Model weights not found at {model_path}.")
