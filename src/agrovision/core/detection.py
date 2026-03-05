@@ -1,4 +1,4 @@
-# src/agrovision/models/yolo.py
+# src/agrovision/core/detection.py
 from ultralytics import YOLO
 
 

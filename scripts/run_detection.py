@@ -1,18 +1,14 @@
 # scripts/run_detection.py
-import argparse
-
-from agrovision.pipelines.detect_weeds import run_detection_pipeline
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Run weed detection pipeline.")
-    parser.add_argument("--model", type=str, required=True, help="Path to the YOLO model.")
-    parser.add_argument("--input_dir", type=str, required=True, help="Path to the input image directory.")
-    parser.add_argument("--output_dir", type=str, required=True, help="Path to the output directory.")
-    args = parser.parse_args()
-
-    run_detection_pipeline(args.model, args.input_dir, args.output_dir)
-
+import sys
+from agrovision.interfaces.cli import main
 
 if __name__ == "__main__":
+    # Simulate command line arguments for the detection command
+    sys.argv = [
+        sys.argv[0], 
+        "detect", 
+        "--model", "weights/best.pt",
+        "--input_dir", "data/images",
+        "--output_dir", "outputs/detections"
+    ]
     main()

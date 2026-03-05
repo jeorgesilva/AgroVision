@@ -5,7 +5,7 @@ import os
 from tqdm import tqdm
 
 from agrovision.data.loaders import load_images
-from agrovision.models.yolo import WeedDetector
+from agrovision.core.detection import WeedDetector
 
 
 def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str):
