@@ -1,149 +1,117 @@
-# 🌱 AgroVision — Precision Weed Detection & VRA Mapping
+# 🌾 AgroVision — Precision Weed Detection & VRA Mapping
 
-AgroVision is an applied AgTech project combining **Computer Vision** and **Geospatial Analysis** to enable **precision herbicide application**.
-
-## 🎯 Features
-- Weed detection using **YOLOv8**
-- Geospatial processing with **GeoPandas**
-- Automatic generation of **Variable-Rate Application (VRA)** maps
-- Export to **GeoJSON** for QGIS or agricultural controllers
-- Interactive web application with **Streamlit**
-
-## 🧠 Tech Stack
-Python • YOLOv8 • OpenCV • GeoPandas • Shapely • Rasterio • Streamlit
-
-## 📁 Project Structure
-```text
-AgroVision/
-├── README.md
-├── requirements.txt
-├── pyproject.toml
-├── .gitignore
-├── data/
-│   ├── images/
-│   ├── transforms/
-│   └── raw/                # opcional
-├── weights/
-│   └── best.pt
-├── outputs/
-│   ├── detections/
-│   └── vra/
-├── configs/
-│   ├── yolo.yaml
-│   └── vra.yaml
-├── src/
-│   └── agrovision/
-│       ├── __init__.py
-│       ├── config.py
-│       ├── core/           # lógica central do projeto
-│       │   ├── detection.py
-│       │   ├── geoprocess.py
-│       │   └── mapping.py
-│       ├── data/           # loaders e transforms
-│       │   ├── __init__.py
-│       │   ├── loaders.py
-│       │   ├── geo_utils.py
-│       │   └── transforms.py
-│       ├── models/
-│       │   ├── __init__.py
-│       │   └── yolo.py
-│       ├── pipelines/
-│       │   ├── __init__.py
-│       │   ├── detect_weeds.py
-│       │   └── vra_mapping.py
-│       ├── utils/
-│       │   ├── __init__.py
-│       │   └── file_utils.py
-│       └── interfaces/
-│           ├── cli.py      # comandos CLI
-│           └── streamlit_app.py
-├── scripts/
-│   ├── run_detection.py    # wrappers simples chamando interfaces.cli
-│   └── run_vra_mapping.py
-└── app/
-    └── streamlit/
-        ├── Home.py
-        ├── Detection.py
-        └── VRA.py
-```
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/jeorgesilva/agrovision-ai.git
-cd agrovision-ai
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-*(Requires Python 3.9+)*
-
-### 3. Run Weed Detection
-
-You can run the weed detection pipeline using the main CLI script or the simplified script.
-
-Using the main CLI:
-```bash
-python src/agrovision/interfaces/cli.py detect \
---model weights/best.pt \
---input_dir data/images \
---output_dir outputs/detections
-```
-
-Or using the script:
-```bash
-python scripts/run_detection.py
-```
-
-### 4. Generate VRA Map
-
-Similarly, you can generate the VRA map using the main CLI or the script.
-
-Using the main CLI:
-```bash
-python src/agrovision/interfaces/cli.py map \
---detections outputs/detections/detections.json \
---transform data/transforms/transform.json \
---output outputs/vra/vra.geojson
-```
-
-Or using the script:
-```bash
-python scripts/run_vra_mapping.py
-```
-
-### 5. Run the Streamlit Web Application
-
-To explore the project's features through an interactive interface, run the Streamlit app:
-
-```bash
-streamlit run app/streamlit/Home.py
-```
-
-## 📦 Output
-- `detections.json` with bounding boxes for each image.
-- `vra.geojson` containing weed density per grid cell for use in GIS software.
-- Annotated images (if configured).
-
-## 🗺️ Roadmap & Future Enhancements
-
-* [ ] **Custom Dataset Fine-Tuning:** Train YOLOv8 on specific regional datasets.
-* [ ] **Offline Edge Deployment:** Optimize the YOLO model using TensorRT for offline inference on farm equipment.
-* [ ] **Drone Integration:** Process batch images captured by agricultural drones.
-* [ ] **Weather API Integration:** Use real-time weather data to adjust treatment recommendations.
-
-## 👨‍💻 Author
-
-**Jeorge Silva**
-*Junior AI Engineer | Bridging Data Science and AgTech*
-[LinkedIn](https://linkedin.com/in/jeorgecssilva) | [GitHub](https://github.com/jeorgesilva)
+![Python](https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Ultralytics YOLO](https://img.shields.io/badge/Ultralytics_YOLO-FF6F00?style=for-the-badge) ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white) ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=PyTorch&logoColor=white) ![GeoPandas](https://img.shields.io/badge/GeoPandas-2E8B57?style=for-the-badge&logo=geopandas&logoColor=white) ![Shapely](https://img.shields.io/badge/Shapely-0F172A?style=for-the-badge) ![Rasterio](https://img.shields.io/badge/Rasterio-007ACC?style=for-the-badge) ![Streamlit](https://img.shields.io/badge/Streamlit-FE4B4B?style=for-the-badge&logo=streamlit&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-0db7ed?style=for-the-badge&logo=docker&logoColor=white) ![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white) ![Pandas](https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 
 ---
 
-*Disclaimer: This is a portfolio proof-of-concept. Real-world agricultural application of chemicals should always be verified by a certified human agronomist.*
+Kurzbeschreibung
+
+    AgroVision wandelt Drohnen‑Ortomosaike in VRA‑(Variable Rate Application)‑Prescriptions um.
+    Workflow: Detektion (YOLO) → Georeferenzierung → VRA‑Grid → Export (GeoJSON / Shapefile).
+    Zielgruppe: Drohnenpiloten und Lohnunternehmer (500–2.000 ha), die präzise, kosten‑ und zeiteffiziente Applikationen benötigen.
+
+---
+Hauptfunktionen
+
+    Unkraut‑Detektion mit YOLO (mehrere Arten wählbar).
+
+    Pixel → GPS: automatische Umrechnung über GeoTIFF‑Transform.
+
+    VRA‑Grid (z. B. 5×5 m) mit Dosiszuweisung (z. B. 0 / 150 L/ha).
+
+    Export: GeoJSON, Shapefile (.zip) und PDF‑Kurzberichte.
+
+    Demo‑Interface: Streamlit mit interaktivem Folium/Leaflet‑Kartenviewer.
+
+    Automatisierbare Pipeline: Inferenz → Geoprocess → Export.
+
+---
+
+## Outputs
+- `outputs/detections/` → JSON mit Bounding‑Boxes + annotierte Bilder  
+- `outputs/vra/vra.geojson` → VRA‑Karte (Grid mit Dichten)  
+- Exportierbare GeoJSON/GeoTIFF für GIS‑Workflows
+
+---
+
+## Projektstruktur (Kurz)
+
+    AgroVision/
+    ├─ docs/
+    │  ├─ map.html
+    │  ├─ vra.geojson
+    │  └─ images/
+    │     └─ map_thumb.png
+    ├─ src/
+    │  ├─ agrovision/
+    │  │  ├─ core/
+    │  │  │  └─ geoprocess.py
+    │  │  ├─ pipelines/
+    │  │  │  └─ vra_mapping.py
+    │  │  ├─ models/
+    │  │  │  └─ yolo.py
+    │  │  └─ interfaces/
+    │  │     └─ cli.py
+    ├─ app/
+    │  └─ streamlit/
+    │     └─ VRA.py
+    ├─ data/
+    │  ├─ raw/
+    │  └─ sessions/
+    ├─ weights/
+    ├─ requirements.txt
+    └─ README.md
+
+
+---
+
+## Schnellstart (lokal)
+
+Klonen
+
+    git clone https://github.com/jeorgesilva/AgroVision.git
+    cd AgroVision
+
+Virtuelle Umgebung & Abhängigkeiten
+
+    python -m venv .venv
+    source .venv/bin/activate   # macOS / Linux
+    .venv\Scripts\activate      # Windows
+    pip install -r requirements.txt
+    
+Modellgewichte
+
+    Kopiere weights/best.pt in weights/.
+
+Detektion (Beispiel CLI)
+
+    python src/agrovision/interfaces/cli.py detect \
+      --model weights/best.pt \
+      --input_dir data/images \
+      --output_dir outputs/detections
+
+VRA‑Erzeugung
+
+    python src/agrovision/interfaces/cli.py map \
+      --detections outputs/detections/detections.json \
+      --image /path/to/ortho.tif \
+      --output outputs/vra/vra.geojson
+    
+Demo starten
+
+    streamlit run app/streamlit/VRA.py
+
+---
+
+
+## Hinweise & Best Practices
+- **Daten:** Trainingsdaten sind aus Lizenzgründen nicht enthalten — siehe `data/README.md` für Hinweise zur Vorbereitung.  
+- **Reproduzierbarkeit:** Versioniere Weights und speichere `transform.json` mit Metadaten (CRS, resolution).  
+- **Sicherheit:** Feldbehandlungen immer mit zertifizierten Agronomen abstimmen.
+
+---
+
+## Kontakt
+**Jeorge Silva** — AI Engineer  
+GitHub: `github.com/jeorgesilva`
+---
