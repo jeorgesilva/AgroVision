@@ -1,13 +1,54 @@
-# configs/yolo.yaml
-# YOLOv8 configuration file
+# configs/yolo11-weed.yaml
+# Configuração otimizada para YOLOv11 — detecção de ervas daninhas
 
-# model
 model:
-  name: yolov8s.pt
-
-# data
+  name: checkpoint_emergencia_v12.pt # O seu novo modelo treinado
 data:
   train: ../data/images/train
   val: ../data/images/val
+  test: ../data/images/test  # opcional, mas recomendado
+
   names:
-    0: weed
+    - Cardamine_bonariensis
+    - Digitaria_insularis
+    - Cocos_nucifera
+    - Dysphania_ambrosioides
+    - Glycine_max
+    - Sorghum_halepense
+
+
+train:
+  epochs: 150
+  batch: 16
+  imgsz: 1024          # importante para objetos pequenos
+  workers: 8
+  device: 0            # GPU
+  optimizer: AdamW
+  lr0: 0.0005          # learning rate inicial
+  lrf: 0.01            # fator de decaimento
+  warmup_epochs: 3
+  patience: 50         # early stopping
+
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 5
+  translate: 0.10
+  scale: 0.50
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.0
+  fliplr: 0.5
+  mosaic: 0.7
+  mixup: 0.1
+  copy_paste: 0.0
+
+# Ajustes para objetos pequenos (ervas daninhas)
+anchors:
+  auto: true
+
+# Logging
+logging:
+  project: weed-detection
+  name: yolov11s-optimized

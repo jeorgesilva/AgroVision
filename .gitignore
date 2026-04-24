@@ -131,3 +131,7 @@ cython_debug/
 /data/
 /weights/
 .streamlit/
+
+src/agrovision/data/
+checkpoint_emergencia_v12.pt
+notebooks/
