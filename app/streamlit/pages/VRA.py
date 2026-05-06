@@ -5,10 +5,12 @@ import streamlit as st
 # -----------------------------
 st.set_page_config(page_title="VRA Map & Reports", page_icon="🗺️", layout="wide")
 
+import sys
 import os
 import json
 import zipfile
 import io
+from pathlib import Path
 import rasterio
 import numpy as np
 import folium
@@ -20,6 +22,18 @@ import warnings
 import glob
 
 warnings.filterwarnings("ignore", category=UserWarning, module="geopandas")
+
+# Resolve project root the same way Detection.py does so VRA.py works in any
+# environment without hardcoded paths.
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_SRC_DIR = _PROJECT_ROOT / "src"
+try:
+    import agrovision  # noqa: F401
+except ImportError:
+    if _SRC_DIR.is_dir():
+        sys.path.insert(0, str(_SRC_DIR))
+
+from agrovision.core.report_gen import PDF_FILENAME
 
 # -----------------------------
 # Lógica de Sessão e Caminhos
@@ -214,7 +228,7 @@ try:
             c2.download_button("🌐 Baixar GeoJSON Original", f, "vra_raw.geojson", "application/geo+json", use_container_width=True)
 
         # Botão 3: O Relatório PDF Comercial
-        report_pdf_path = os.path.join(os.path.dirname(VRA_PATH), "reports", "Relatorio_AgroVision.pdf")
+        report_pdf_path = os.path.join(os.path.dirname(VRA_PATH), "reports", PDF_FILENAME)
         if os.path.exists(report_pdf_path):
             with open(report_pdf_path, "rb") as pdf_file:
                 c3.download_button("📄 Baixar Relatório Técnico (PDF)", pdf_file, "Relatorio_AgroVision_Cliente.pdf", "application/pdf", type="primary", use_container_width=True)

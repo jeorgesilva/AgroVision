@@ -1,5 +1,6 @@
 # src/agrovision/core/mapping.py
 import json
+import traceback
 import geopandas as gpd
 from shapely.geometry import box
 from pathlib import Path
@@ -9,7 +10,7 @@ from rasterio.transform import Affine
 # Imports internos do projeto
 from agrovision.core.geoprocess import create_vra_grid
 from agrovision.core.analytics import generate_report_material
-from agrovision.core.report_gen import create_pdf_report
+from agrovision.core.report_gen import create_pdf_report, PDF_FILENAME
 
 def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     """
@@ -120,9 +121,11 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     # ---------------------------------------------------------
     print("📄 A compilar o relatório técnico em PDF...")
     try:
-        # Você pode customizar o nome do cliente aqui ou receber via kwargs
-        nome_cliente = kwargs.get('client_name', "Sul Pará Drones")
+        nome_cliente = kwargs.get("client_name", "Sul Pará Drones")
         pdf_path = create_pdf_report(str(report_dir), client_name=nome_cliente)
         print(f"🏆 Relatório PDF finalizado: {pdf_path}")
     except Exception as e:
-        print(f"⚠️ Erro ao gerar o PDF: {e}")
+        # Log the full traceback so the root cause is visible in server logs.
+        # The VRA map itself was already saved, so the pipeline is not aborted.
+        print(f"⚠️ Erro ao gerar o PDF — o mapa VRA foi salvo normalmente.\n"
+              f"{traceback.format_exc()}")

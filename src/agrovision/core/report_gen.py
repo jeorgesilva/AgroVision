@@ -3,6 +3,11 @@ import json
 import os
 from datetime import datetime
 
+# Single source of truth for the output filename.
+# VRA.py uses this constant to build the download path so both sides
+# stay in sync even if the name changes in the future.
+PDF_FILENAME = "Relatorio_AgroVision.pdf"
+
 class AgroReport(FPDF):
     def header(self):
         # Barra Verde de Topo
@@ -27,9 +32,19 @@ class AgroReport(FPDF):
         self.cell(0, 10, f'Página {self.page_no()} | Gerado por AgroVision - Tecnologia YOLOv12', 0, 0, 'L')
         self.cell(0, 10, 'Contato: agrovision.ai@suporte.com', 0, 0, 'R')
 
-def create_pdf_report(report_dir, client_name="Cliente Especial"):
+def create_pdf_report(report_dir: str, client_name: str = "Cliente Especial") -> str:
+    """Generates the professional PDF report and returns its absolute path.
+
+    Args:
+        report_dir:  Directory that contains metrics.json and the chart PNGs
+                     produced by generate_report_material(). Created here if
+                     it does not exist yet (defensive guard).
+        client_name: Client name printed in the identification block.
+    """
+    os.makedirs(report_dir, exist_ok=True)
+
     metrics_path = os.path.join(report_dir, "metrics.json")
-    with open(metrics_path, 'r') as f:
+    with open(metrics_path, "r") as f:
         metrics = json.load(f)
 
     # Configuração do Documento
@@ -106,6 +121,6 @@ def create_pdf_report(report_dir, client_name="Cliente Especial"):
     pdf.set_text_color(100, 100, 100)
     pdf.multi_cell(0, 5, "AVISO: Este relatório é baseado em processamento de imagens via IA. A eficácia da aplicação depende da calibração do equipamento (drone/trator) e das condições meteorológicas no momento da pulverização. Georreferenciamento verificado via Metadados Nativos.")
 
-    output_pdf = os.path.join(report_dir, "Relatorio_AgroVision_Profissional.pdf")
+    output_pdf = os.path.join(report_dir, PDF_FILENAME)
     pdf.output(output_pdf)
     return output_pdf
