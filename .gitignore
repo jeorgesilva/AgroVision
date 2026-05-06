@@ -132,6 +132,12 @@ cython_debug/
 /weights/
 .streamlit/
 
-src/agrovision/data/
+# Ignore runtime data inside the package, but keep Python source files tracked
+src/agrovision/data/sessions/
+src/agrovision/data/images/
+src/agrovision/data/*.tif
+src/agrovision/data/*.tiff
+src/agrovision/data/*.ecw
+src/agrovision/data/*.json
 checkpoint_emergencia_v12.pt
 notebooks/
