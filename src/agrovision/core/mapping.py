@@ -1,11 +1,14 @@
 # src/agrovision/core/mapping.py
 import json
+import logging
 import traceback
 import geopandas as gpd
 from shapely.geometry import box
 from pathlib import Path
 import rasterio
 from rasterio.transform import Affine
+
+logger = logging.getLogger(__name__)
 
 # Imports internos do projeto
 from agrovision.core.geoprocess import create_vra_grid
@@ -36,7 +39,7 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     geometries = []
     attributes = []
 
-    print("📍 A converter píxeis em coordenadas geográficas reais...")
+    logger.info("Converting pixel coordinates to real-world coordinates...")
 
     for entry in all_detections:
         image_id = entry.get("image_path")
@@ -67,7 +70,7 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
 
     # Caso não haja detecções, criamos um mapa vazio seguro para a Interface não dar erro
     if not geometries:
-        print("⚠️ Nenhuma planta detetada. A gerar mapa VRA limpo...")
+        logger.warning("No detections found. Generating empty VRA map...")
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
@@ -78,7 +81,7 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
         raw_path = output_path.parent / "raw_detections.geojson"
         empty_gdf.to_file(raw_path)
         
-        print(f"✅ Mapa VRA Vazio guardado em: {output_path}")
+        logger.info("Empty VRA map saved to: %s", output_path)
         return
 
     # 3. Criar o GeoDataFrame com as caixas exatas (Camada de "Raio-X")
@@ -90,23 +93,23 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     
     raw_path = output_path.parent / "raw_detections.geojson"
     weeds_gdf.to_file(raw_path)
-    print(f"🎯 Posições exatas guardadas em: {raw_path}")
+    logger.info("Raw detections saved to: %s", raw_path)
     
     # 4. Gerar a Grelha Regular de Aplicação (Grid VRA)
     # Aqui usamos a nova lógica de quadrados centrados na planta
     tamanho_grelha = kwargs.get('grid_size', 10.0) 
-    print(f"🚜 A gerar grelha de aplicação em blocos de {tamanho_grelha}x{tamanho_grelha}m...")
+    logger.info("Generating VRA grid with %.1f x %.1f m cells...", tamanho_grelha, tamanho_grelha)
     
     zones_gdf = create_vra_grid(weeds_gdf, grid_size=tamanho_grelha)
     
     # 5. Guardar o ficheiro GeoJSON da Grelha (Camada Gold)
     zones_gdf.to_file(output_path)
-    print(f"✅ Mapa VRA gerado com sucesso em: {output_path}")
+    logger.info("VRA map saved to: %s", output_path)
 
     # ---------------------------------------------------------
     # 6. ANALYTICS: Geração de Gráficos e Imagens para o Relatório
     # ---------------------------------------------------------
-    print("📊 A processar estatísticas e gráficos de economia...")
+    logger.info("Generating analytics and economy charts...")
     report_dir = output_path.parent / "reports"
     
     # Gera os PNGs e calcula as métricas finais
@@ -119,13 +122,15 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     # ---------------------------------------------------------
     # 7. RELATÓRIO: Geração do PDF Final Profissional
     # ---------------------------------------------------------
-    print("📄 A compilar o relatório técnico em PDF...")
+    logger.info("Compiling PDF technical report...")
     try:
         nome_cliente = kwargs.get("client_name", "Sul Pará Drones")
         pdf_path = create_pdf_report(str(report_dir), client_name=nome_cliente)
-        print(f"🏆 Relatório PDF finalizado: {pdf_path}")
+        logger.info("PDF report finalized: %s", pdf_path)
     except Exception as e:
         # Log the full traceback so the root cause is visible in server logs.
         # The VRA map itself was already saved, so the pipeline is not aborted.
-        print(f"⚠️ Erro ao gerar o PDF — o mapa VRA foi salvo normalmente.\n"
-              f"{traceback.format_exc()}")
+        logger.error(
+            "PDF generation failed — VRA map was saved normally.\n%s",
+            traceback.format_exc(),
+        )

@@ -1,3 +1,4 @@
+import logging
 import matplotlib
 matplotlib.use('Agg')  # must be set before pyplot is imported
 
@@ -6,6 +7,8 @@ import geopandas as gpd
 import os
 import rasterio
 from rasterio.plot import show as raster_show
+
+logger = logging.getLogger(__name__)
 
 plt.style.use('ggplot')
 
@@ -66,7 +69,7 @@ def generate_report_material(grid_gdf: gpd.GeoDataFrame, ortho_path: str, output
         fig1.savefig(os.path.join(output_dir, "grafico_economia.png"))
         plt.close(fig1)
     except Exception as e:
-        print(f"⚠️ Erro no gráfico de pizza: {e}")
+        logger.warning("Failed to generate pie chart: %s", e)
 
     # --- 3. Mapa estático de prescrição ---
     try:
@@ -89,7 +92,7 @@ def generate_report_material(grid_gdf: gpd.GeoDataFrame, ortho_path: str, output
         )
         plt.close(fig2)
     except Exception as e:
-        print(f"⚠️ Erro ao gerar mapa estático: {e}")
+        logger.warning("Failed to generate static map: %s", e)
         fig_err, ax_err = plt.subplots()
         ax_err.text(0.5, 0.5, "Mapa indisponível para arquivos gigantes", ha="center")
         fig_err.savefig(os.path.join(output_dir, "mapa_estatico_prescricao.png"))

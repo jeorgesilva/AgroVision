@@ -1,8 +1,11 @@
+import logging
 import geopandas as gpd
 from shapely.geometry import box
 import pandas as pd
 import numpy as np
 import rasterio
+
+logger = logging.getLogger(__name__)
 
 def load_transform(raster_path):
     """
@@ -32,7 +35,7 @@ def create_vra_grid(weeds_gdf: gpd.GeoDataFrame, grid_size: float = 10.0) -> gpd
     original_crs = weeds_gdf.crs
 
     # 1. Reprojetar para um CRS métrico local para que "10.0" signifique 10 metros reais
-    print("🌍 A re-projetar para coordenadas métricas locais...")
+    logger.info("Reprojecting to local metric CRS...")
     if original_crs and original_crs.is_geographic:
         projected_crs = weeds_gdf.estimate_utm_crs()
         weeds_projected = weeds_gdf.to_crs(projected_crs)
@@ -80,7 +83,7 @@ def create_vra_grid(weeds_gdf: gpd.GeoDataFrame, grid_size: float = 10.0) -> gpd
     grid_gdf['rate_l_ha'] = grid_gdf['spray_action'] * 150.0  # Ex: 150 Litros por Hectare
 
     # 8. Voltar para o CRS original (GPS / WGS84)
-    print("📍 A devolver os blocos para formato GPS (EPSG:4326)...")
+    logger.info("Reprojecting grid back to source CRS...")
     final_grid = grid_gdf.to_crs(original_crs)
 
     return final_grid

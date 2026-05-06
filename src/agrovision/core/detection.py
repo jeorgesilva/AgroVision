@@ -1,9 +1,12 @@
+import logging
 import os
 import numpy as np
 from pathlib import Path
 from agrovision.models.yolo import WeedDetector as YoloWeedDetector
 from agrovision.data.loaders import list_images
-from agrovision.data.tilling import gerar_fatias_raster 
+from agrovision.data.tilling import gerar_fatias_raster
+
+logger = logging.getLogger(__name__)
 
 def run_batch_detection(model_path: str, input_path: str, detector: YoloWeedDetector = None):
     """Run detection over a raster file or a directory of images.
@@ -25,7 +28,7 @@ def run_batch_detection(model_path: str, input_path: str, detector: YoloWeedDete
     
     # SE FOR UM RASTER GIGANTE (.tif / .tiff)
     if caminho.is_file() and caminho.suffix.lower() in ['.tif', '.tiff']:
-        print(f"🗺️ A processar ortomosaico gigante: {caminho.name}")
+        logger.info("Processing large raster: %s", caminho.name)
         
         # Fatiar com tamanho de 1024 e sobreposição de 15% (overlap)
         for img_pil, meta in gerar_fatias_raster(str(caminho), tamanho_fatia=512, sobreposicao=0.15):
@@ -45,7 +48,7 @@ def run_batch_detection(model_path: str, input_path: str, detector: YoloWeedDete
                 
     # SE FOR UMA PASTA DE IMAGENS NORMAIS
     elif caminho.is_dir():
-        print(f"📂 A processar diretório de imagens: {caminho.name}")
+        logger.info("Processing image directory: %s", caminho.name)
         images = list_images(input_path)
         for img in images:
             pred = detector.detect(str(img))

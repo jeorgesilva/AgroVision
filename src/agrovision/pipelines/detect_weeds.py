@@ -1,7 +1,10 @@
 # src/agrovision/pipelines/detect_weeds.py
 import json
+import logging
 import os
 from agrovision.core.detection import run_batch_detection
+
+logger = logging.getLogger(__name__)
 
 def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str, detector=None):
     """Executa o pipeline de detecção e salva os resultados em JSON.
@@ -41,4 +44,4 @@ def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str, det
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(formatted_results, f, indent=4)
         
-    print(f"✅ Deteções salvas com sucesso em: {output_path}")
+    logger.info("Detections saved to: %s", output_path)

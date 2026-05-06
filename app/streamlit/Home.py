@@ -1,3 +1,15 @@
+import sys
+from pathlib import Path
+
+# auth.py lives in the same directory as this file
+_STREAMLIT_DIR = Path(__file__).resolve().parent
+if str(_STREAMLIT_DIR) not in sys.path:
+    sys.path.insert(0, str(_STREAMLIT_DIR))
+
+from auth import require_login  # noqa: E402
+
+require_login()
+
 import streamlit as st
 
 # -----------------------------

@@ -1,6 +1,7 @@
 import argparse
 from agrovision.pipelines.detect_weeds import run_detection_pipeline
 from agrovision.pipelines.vra_mapping import run_vra_mapping_pipeline
+from agrovision.utils.logging_config import setup_logging
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -66,6 +67,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    setup_logging()
     args = _build_parser().parse_args()
 
     if args.command == "detect":

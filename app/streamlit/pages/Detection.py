@@ -12,6 +12,7 @@ from pathlib import Path
 #   └─ parents[3] = <project root>
 # ---------------------------------------------------------------------------
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_STREAMLIT_DIR = Path(__file__).resolve().parents[1]
 _SRC_DIR = _PROJECT_ROOT / "src"
 _DATA_DIR = _PROJECT_ROOT / "data"
 _MODEL_PATH = _PROJECT_ROOT / "checkpoint_emergencia_v12.pt"
@@ -23,6 +24,13 @@ try:
 except ImportError:
     if _SRC_DIR.is_dir():
         sys.path.insert(0, str(_SRC_DIR))
+
+if str(_STREAMLIT_DIR) not in sys.path:
+    sys.path.insert(0, str(_STREAMLIT_DIR))
+
+from auth import require_login  # noqa: E402
+
+require_login()
 
 import streamlit as st
 import numpy as np

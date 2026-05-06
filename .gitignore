@@ -130,7 +130,7 @@ cython_debug/
 /outputs/
 /data/
 /weights/
-.streamlit/
+.streamlit/secrets.toml
 
 # Ignore runtime data inside the package, but keep Python source files tracked
 src/agrovision/data/sessions/

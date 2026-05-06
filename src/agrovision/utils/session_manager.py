@@ -66,7 +66,7 @@ class SessionManager:
         with open(manifest_path, "w") as f:
             json.dump(data, f, indent=4)
 
-        print(f"Manifest saved to: {manifest_path}")
+        logging.getLogger(__name__).info("Manifest saved to: %s", manifest_path)
 
     @staticmethod
     def clear_st_session():
