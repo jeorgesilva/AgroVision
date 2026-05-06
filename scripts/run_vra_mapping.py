@@ -1,14 +1,28 @@
-# scripts/run_vra_mapping.py
+"""Thin wrapper around the unified CLI for the VRA mapping command.
+
+Usage:
+    python scripts/run_vra_mapping.py --detections <path> \
+                                       --raster     <path> \
+                                       --output     <path> \
+                                       [--grid_size <float>]
+
+The 'map' subcommand is inserted automatically.  All argument parsing lives
+in a single place (interfaces/cli.py) to avoid duplication.
+"""
 import sys
-from agrovision.interfaces.cli import main
+from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_SRC = _PROJECT_ROOT / "src"
+try:
+    import agrovision  # noqa: F401
+except ImportError:
+    if _SRC.is_dir():
+        sys.path.insert(0, str(_SRC))
+
+from agrovision.interfaces.cli import main  # noqa: E402
 
 if __name__ == "__main__":
-    # Simulate command line arguments for the mapping command
-    sys.argv = [
-        sys.argv[0],
-        "map",
-        "--detections", "outputs/detections/detections.json",
-        "--transform", "data/transforms/transform.json",
-        "--output", "outputs/vra/vra.geojson"
-    ]
+    if len(sys.argv) < 2 or sys.argv[1] != "map":
+        sys.argv.insert(1, "map")
     main()
