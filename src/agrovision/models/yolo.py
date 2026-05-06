@@ -5,7 +5,10 @@ import rasterio
 from rasterio.plot import reshape_as_image
 import numpy as np
 
-Image.MAX_IMAGE_PIXELS = None
+# Allow large orthomosaic tiles while keeping decompression-bomb protection
+# active. None would disable PIL's safeguard entirely, exposing the server
+# to maliciously crafted images that exhaust RAM.
+Image.MAX_IMAGE_PIXELS = 500_000_000  # 500 MP ≈ a 22 000 × 22 000 px image
 
 def load_image_robust(image_path):
     """Loads TIFF/GeoTIFF images robustly by converting to RGB uint8."""

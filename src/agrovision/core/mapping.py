@@ -24,27 +24,27 @@ def create_vra_map(detections_path, raster_path, output_path, **kwargs):
     with open(detections_path, "r", encoding="utf-8") as f: 
         all_detections = json.load(f)
         
-    # 2. Ler o CRS (Sistema de Coordenadas) do Ortomosaico
-    with rasterio.open(raster_path) as src: 
+    # 2. Ler o CRS e o transform global do ortomosaico numa única abertura.
+    #    O transform global serve de fallback para fatias sem transform_matrix
+    #    (modo diretório de imagens). Abrir o raster dentro do loop seria
+    #    um open/close por entrada — potencialmente milhares de vezes.
+    with rasterio.open(raster_path) as src:
         raster_crs = src.crs
+        fallback_transform = src.transform
 
     geometries = []
     attributes = []
-    
+
     print("📍 A converter píxeis em coordenadas geográficas reais...")
-    
+
     for entry in all_detections:
         image_id = entry.get("image_path")
         meta = entry.get("metadata", {})
-        
-        # Recuperar a matriz de transformação da fatia específica
+
         if "transform_matrix" in meta:
-            t_matrix = meta["transform_matrix"]
-            transform_fatia = Affine(*t_matrix)
+            transform_fatia = Affine(*meta["transform_matrix"])
         else:
-            # Fallback para o transform global do raster
-            with rasterio.open(raster_path) as src: 
-                transform_fatia = src.transform
+            transform_fatia = fallback_transform
 
         for det in entry.get("detections", []):
             x1, y1, x2, y2 = det["bbox"]

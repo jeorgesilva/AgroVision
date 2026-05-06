@@ -3,14 +3,21 @@ import json
 import os
 from agrovision.core.detection import run_batch_detection
 
-def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str):
-    """
-    Executa o pipeline e guarda os resultados. 
-    Agora suporta Metadados Espaciais para Ortomosaicos fatiados!
+def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str, detector=None):
+    """Executa o pipeline de detecção e salva os resultados em JSON.
+
+    Args:
+        model_path: Caminho para os pesos YOLO. Ignorado se *detector* for
+                    fornecido, mas deve ser passado para manter compatibilidade
+                    com chamadas existentes (ex: CLI).
+        input_dir:  Caminho para um GeoTIFF único ou diretório de imagens.
+        output_dir: Diretório onde detections.json será gravado (camada Silver).
+        detector:   Instância WeedDetector já carregada. Quando fornecida o
+                    modelo não é recarregado do disco (PERF-03).
     """
     os.makedirs(output_dir, exist_ok=True)
 
-    raw_results = run_batch_detection(model_path, input_dir)
+    raw_results = run_batch_detection(model_path, input_dir, detector=detector)
     formatted_results = []
 
     for img_path, pred in raw_results:

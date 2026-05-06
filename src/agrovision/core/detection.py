@@ -5,8 +5,20 @@ from agrovision.models.yolo import WeedDetector as YoloWeedDetector
 from agrovision.data.loaders import list_images
 from agrovision.data.tilling import gerar_fatias_raster 
 
-def run_batch_detection(model_path: str, input_path: str):
-    detector = YoloWeedDetector(model_path)
+def run_batch_detection(model_path: str, input_path: str, detector: YoloWeedDetector = None):
+    """Run detection over a raster file or a directory of images.
+
+    Args:
+        model_path: Path to the YOLO weights file. Ignored when *detector* is
+                    provided — pass any non-empty string to keep the signature
+                    compatible with existing callers.
+        input_path: GeoTIFF path or directory of image files.
+        detector:   Pre-loaded WeedDetector instance. When supplied the model
+                    is not loaded from disk, which avoids reloading hundreds of
+                    MB of weights on every Streamlit rerun (PERF-03).
+    """
+    if detector is None:
+        detector = YoloWeedDetector(model_path)
     results = []
     
     caminho = Path(input_path)
