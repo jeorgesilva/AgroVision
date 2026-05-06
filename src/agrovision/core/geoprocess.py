@@ -1,5 +1,6 @@
 import logging
 import geopandas as gpd
+from shapely import BufferCapStyle
 from shapely.geometry import box
 import pandas as pd
 import numpy as np
@@ -51,8 +52,7 @@ def create_vra_grid(weeds_gdf: gpd.GeoDataFrame, grid_size: float = 10.0) -> gpd
     radius = grid_size / 2.0
     
     # Fazemos um buffer retangular em torno do centro exato da planta
-    # cap_style=3 significa "Quadrado", criando um bloco de 10x10 exato.
-    squared_buffers = centroids.buffer(radius, cap_style=3)
+    squared_buffers = centroids.buffer(radius, cap_style=BufferCapStyle.square)
 
     # 4. Unir os quadrados que se sobrepõem (Para não haver duplicação de doses)
     from shapely.ops import unary_union
