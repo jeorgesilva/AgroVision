@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 
-def list_images(directory: Union[str, Path]) -> List[Path]:
+
+def list_images(directory: Union[str, Path]) -> list[Path]:
     """List all images in a directory (recursive)."""
     directory = Path(directory)
     extensions = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}

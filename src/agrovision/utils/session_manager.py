@@ -1,10 +1,11 @@
-import os
 import json
-import shutil
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
+
 import streamlit as st
+
 
 class SessionManager:
     """
@@ -35,10 +36,10 @@ class SessionManager:
         # Define medallion layers
         paths = {
             "root": session_path,
-            "bronze": session_path / "bronze", # Raw Images
-            "silver": session_path / "silver", # Detections, Metadata
-            "gold": session_path / "gold",     # VRA Maps, Reports
-            "logs": session_path / "logs"
+            "bronze": session_path / "bronze",  # Raw Images
+            "silver": session_path / "silver",  # Detections, Metadata
+            "gold": session_path / "gold",  # VRA Maps, Reports
+            "logs": session_path / "logs",
         }
 
         # Create directories
@@ -47,12 +48,9 @@ class SessionManager:
 
         logging.info(f"Session created: {session_id}")
 
-        return {
-            "id": session_id,
-            "paths": {k: str(v) for k, v in paths.items()}
-        }
+        return {"id": session_id, "paths": {k: str(v) for k, v in paths.items()}}
 
-    def save_manifest(self, session_data: dict, metadata: dict = None):
+    def save_manifest(self, session_data: dict, metadata: Optional[dict] = None):
         """Saves a JSON manifest with session details in the root session folder."""
         manifest_path = Path(session_data["paths"]["root"]) / "manifest.json"
 
@@ -60,13 +58,13 @@ class SessionManager:
             "session_id": session_data["id"],
             "created_at": datetime.now().isoformat(),
             "paths": session_data["paths"],
-            "metadata": metadata or {}
+            "metadata": metadata or {},
         }
 
         with open(manifest_path, "w") as f:
             json.dump(data, f, indent=4)
 
-        print(f"Manifest saved to: {manifest_path}")
+        logging.getLogger(__name__).info("Manifest saved to: %s", manifest_path)
 
     @staticmethod
     def clear_st_session():
@@ -79,7 +77,7 @@ class SessionManager:
             "ortho_path",
             "shp_dir",
             "processed_data",
-            "uploaded_file_buffer"
+            "uploaded_file_buffer",
         ]
         for key in keys_to_clear:
             if key in st.session_state:
