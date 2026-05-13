@@ -3,15 +3,16 @@ import os
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Resolve project root from this file's location so the app works in any
-# environment (local, Docker, cloud VM) without hardcoded paths.
-#   app/streamlit/pages/Detection.py
-#   └─ parents[0] = pages/
-#   └─ parents[1] = streamlit/
-#   └─ parents[2] = app/
-#   └─ parents[3] = <project root>
 # ---------------------------------------------------------------------------
-_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+# environment (local, Docker, cloud VM) without hardcoded paths.
+#   src/agrovision/interfaces/pages/Detection.py
+#   └─ parents[0] = pages/
+#   └─ parents[1] = interfaces/
+#   └─ parents[2] = agrovision/
+#   └─ parents[3] = src/
+# #   └─ parents[4] = <project root>
+# ---------------------------------------------------------------------------
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
 _STREAMLIT_DIR = Path(__file__).resolve().parents[1]
 _SRC_DIR = _PROJECT_ROOT / "src"
 _DATA_DIR = _PROJECT_ROOT / "data"

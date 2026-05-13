@@ -6,7 +6,7 @@ from pathlib import Path
 import streamlit as st
 
 # Make the agrovision package importable from the Streamlit context
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _SRC_DIR = _PROJECT_ROOT / "src"
 try:
     import agrovision  # noqa: F401

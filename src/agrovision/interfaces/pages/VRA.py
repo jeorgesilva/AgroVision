@@ -36,7 +36,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="geopandas")
 
 # Resolve project root the same way Detection.py does so VRA.py works in any
 # environment without hardcoded paths.
-_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
 _SRC_DIR = _PROJECT_ROOT / "src"
 try:
     import agrovision  # noqa: F401
