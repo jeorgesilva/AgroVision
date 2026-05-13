@@ -53,6 +53,7 @@ dev = [
 agrovision        = "agrovision.interfaces.cli:main"
 agrovision-detect = "agrovision.interfaces.cli:run_detection"
 agrovision-map    = "agrovision.interfaces.cli:run_vra"
+agrovision-ui     = "agrovision.interfaces.streamlit_app:main"
 
 [project.urls]
 "Homepage"    = "https://github.com/jeorgesilva/agrovision-ai"
