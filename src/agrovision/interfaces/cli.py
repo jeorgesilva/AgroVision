@@ -1,4 +1,5 @@
 import argparse
+import sys
 from agrovision.pipelines.detect_weeds import run_detection_pipeline
 from agrovision.pipelines.vra_mapping import run_vra_mapping_pipeline
 from agrovision.utils.logging_config import setup_logging
@@ -76,6 +77,18 @@ def main() -> None:
         run_vra_mapping_pipeline(
             args.detections, args.raster, args.output, grid_size=args.grid_size
         )
+
+
+def run_detection() -> None:
+    """Entry point for the `agrovision-detect` console script."""
+    sys.argv.insert(1, "detect")
+    main()
+
+
+def run_vra() -> None:
+    """Entry point for the `agrovision-map` console script."""
+    sys.argv.insert(1, "map")
+    main()
 
 
 if __name__ == "__main__":
