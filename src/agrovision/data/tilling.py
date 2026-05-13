@@ -1,20 +1,20 @@
 from __future__ import annotations
 
 import math
-import numpy as np
-from typing import Generator, Tuple
+from collections.abc import Generator
 
+import numpy as np
 import rasterio
+from PIL import Image
 from rasterio.transform import Affine
 from rasterio.windows import Window
-from PIL import Image
 
 
 def gerar_fatias_raster(
     raster_path: str,
     tamanho_fatia: int = 512,
     sobreposicao: float = 0.15,
-) -> Generator[Tuple[Image.Image, dict], None, None]:
+) -> Generator[tuple[Image.Image, dict], None, None]:
     """Slices a large GeoTIFF into overlapping square tiles.
 
     Yields (PIL.Image RGB uint8, metadata dict) for each tile.

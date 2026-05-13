@@ -1,16 +1,19 @@
 import logging
-import matplotlib
-matplotlib.use('Agg')  # must be set before pyplot is imported
 
-import matplotlib.pyplot as plt
-import geopandas as gpd
+import matplotlib
+
+matplotlib.use("Agg")  # must be set before pyplot is imported
+
 import os
+
+import geopandas as gpd
+import matplotlib.pyplot as plt
 import rasterio
 from rasterio.plot import show as raster_show
 
 logger = logging.getLogger(__name__)
 
-plt.style.use('ggplot')
+plt.style.use("ggplot")
 
 _M2_PER_HECTARE = 10_000.0
 

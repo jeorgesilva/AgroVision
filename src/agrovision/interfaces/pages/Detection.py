@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -29,14 +29,13 @@ except ImportError:
 if str(_STREAMLIT_DIR) not in sys.path:
     sys.path.insert(0, str(_STREAMLIT_DIR))
 
-from auth import require_login  # noqa: E402
+from auth import require_login
 
 require_login()
 
-import streamlit as st
-import numpy as np
-from PIL import Image
 import rasterio
+import streamlit as st
+from PIL import Image
 from rasterio.plot import reshape_as_image
 
 from agrovision.data.pre_processing import convert_ecw_to_cog
@@ -101,9 +100,7 @@ with st.sidebar:
 col_up, col_loc = st.columns(2)
 
 with col_up:
-    uploaded_file = st.file_uploader(
-        "Upload Ortomosaico (< 200 MB)", type=["tif", "tiff", "ecw"]
-    )
+    uploaded_file = st.file_uploader("Upload Ortomosaico (< 200 MB)", type=["tif", "tiff", "ecw"])
 
 with col_loc:
     local_path_input = st.text_input(

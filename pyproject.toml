@@ -84,3 +84,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["T201"]  # allow print() inside test helpers
+# Streamlit pages must call require_login() before the page imports so that
+# set_page_config() is the first Streamlit command — E402 is unavoidable here.
+"src/agrovision/interfaces/*.py"       = ["E402"]
+"src/agrovision/interfaces/pages/*.py" = ["E402"]

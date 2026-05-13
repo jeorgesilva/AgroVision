@@ -2,9 +2,11 @@
 import json
 import logging
 import os
+
 from agrovision.core.detection import run_batch_detection
 
 logger = logging.getLogger(__name__)
+
 
 def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str, detector=None):
     """Executa o pipeline de detecção e salva os resultados em JSON.
@@ -27,21 +29,23 @@ def run_detection_pipeline(model_path: str, input_dir: str, output_dir: str, det
         entry = {
             "image_path": str(img_path),
             "image_shape": pred.get("image_shape", None),
-            "metadata": pred.get("metadata", {}), # <--- A GRANDE ADIÇÃO AQUI
-            "detections": []
+            "metadata": pred.get("metadata", {}),  # <--- A GRANDE ADIÇÃO AQUI
+            "detections": [],
         }
 
         for det in pred.get("detections", []):
-            entry["detections"].append({
-                "bbox": det["bbox"],
-                "class_name": det["class_name"],
-                "confidence": det["confidence"]
-            })
+            entry["detections"].append(
+                {
+                    "bbox": det["bbox"],
+                    "class_name": det["class_name"],
+                    "confidence": det["confidence"],
+                }
+            )
 
         formatted_results.append(entry)
 
     output_path = os.path.join(output_dir, "detections.json")
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(formatted_results, f, indent=4)
-        
+
     logger.info("Detections saved to: %s", output_path)

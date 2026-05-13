@@ -6,7 +6,7 @@ _STREAMLIT_DIR = Path(__file__).resolve().parent
 if str(_STREAMLIT_DIR) not in sys.path:
     sys.path.insert(0, str(_STREAMLIT_DIR))
 
-from auth import require_login  # noqa: E402
+from auth import require_login
 
 require_login()
 
@@ -16,15 +16,14 @@ import streamlit as st
 # Page Config
 # -----------------------------
 st.set_page_config(
-    page_title="AgroVision AI | Precision agriculture",
-    page_icon="🌱",
-    layout="wide"
+    page_title="AgroVision AI | Precision agriculture", page_icon="🌱", layout="wide"
 )
 
 # -----------------------------
 # Estilo Customizado (CSS)
 # -----------------------------
-st.markdown("""
+st.markdown(
+    """
     <style>
     .main {
         background-color: #0b3661;
@@ -44,7 +43,9 @@ st.markdown("""
         box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True,
+)
 
 # -----------------------------
 # Header / Banner
@@ -69,13 +70,19 @@ st.markdown("### 🛠️ Technological Advantages")
 c1, c2, c3 = st.columns(3)
 
 with c1:
-    st.info("🚀 **Engine**\n\nWeed and tree detection with superior precision, trained for real-world field conditions.")
+    st.info(
+        "🚀 **Engine**\n\nWeed and tree detection with superior precision, trained for real-world field conditions."
+    )
 
 with c2:
-    st.success("🗺️ **VRA Grid Snapping**\n\nGeneration of variable rate maps (SHP) with target-centered grids, ready for DJI and XAG drones.")
+    st.success(
+        "🗺️ **VRA Grid Snapping**\n\nGeneration of variable rate maps (SHP) with target-centered grids, ready for DJI and XAG drones."
+    )
 
 with c3:
-    st.warning("📊 **Analytics & Reports**\n\nAutomatic calculation of input savings and generation of technical reports in PDF for the end client.")
+    st.warning(
+        "📊 **Analytics & Reports**\n\nAutomatic calculation of input savings and generation of technical reports in PDF for the end client."
+    )
 
 st.divider()
 
@@ -89,18 +96,22 @@ col_det, col_vra = st.columns(2)
 with col_det:
     st.markdown('<div class="feature-card">', unsafe_allow_html=True)
     st.markdown("#### 🌿 Detection & Processing")
-    st.write("Upload orthomosaics (TIF/ECW) or point to files of up to 20GB on Drive to start the AI analysis.")
+    st.write(
+        "Upload orthomosaics (TIF/ECW) or point to files of up to 20GB on Drive to start the AI analysis."
+    )
     if st.button("Open Weed Detection"):
         st.switch_page("pages/Detection.py")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with col_vra:
     st.markdown('<div class="feature-card">', unsafe_allow_html=True)
     st.markdown("#### 🗺️ Maps & Reports")
-    st.write("Visualize the infestation, analyze savings charts, and download the package for the tractor (SHP) and the report (PDF).")
+    st.write(
+        "Visualize the infestation, analyze savings charts, and download the package for the tractor (SHP) and the report (PDF)."
+    )
     if st.button("Abrir VRA Map"):
         st.switch_page("pages/VRA.py")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.divider()
 

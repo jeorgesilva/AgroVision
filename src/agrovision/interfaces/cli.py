@@ -1,5 +1,6 @@
 import argparse
 import sys
+
 from agrovision.pipelines.detect_weeds import run_detection_pipeline
 from agrovision.pipelines.vra_mapping import run_vra_mapping_pipeline
 from agrovision.utils.logging_config import setup_logging
